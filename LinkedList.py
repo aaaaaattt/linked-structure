@@ -1,7 +1,7 @@
 from Node import Node
 
-class LinkedStack :
-    def __init__(self):self.head = None                          #데이터 멤버로는 시작 노드를 가리키는 head만!
+class LinkedList :
+    def __init__(self) : self.head = None                          #데이터 멤버로는 시작 노드를 가리키는 head만!
     def isEmpty(self) : return self.head == None                # head가 None이면 공백!(연결된 스택과 같다)
     def isFull(self) : return False                             #연결된 스택과 같다
     
@@ -44,3 +44,32 @@ class LinkedStack :
             node = node.link
             count += 1
         return count
+    
+    def printForward(self) : #모든 요소 화면출력(순서대로)
+        node = self.head
+        while node!=None :
+            print(node.data)
+            node = node.link
+    
+    def printReverse(self) :
+        self.getNode(self.size())
+
+#   def printReverse() 구현 잠시 보류..
+
+    def append(self,elem):
+        before = self.getNode(self.size()-1)
+        if before == None :                         #공백이면 시작 위치에 삽입
+            self.head = Node(elem, self.head)
+        else :                                      #공백이 아니면 
+            node = Node(elem,before.link)           #node를 만들고 link는 before다음 링크를 가리키도록
+            before.link = node                      #이전 노드 before가 새로운 node를 가리킨다
+    
+    def merge(self,B):  #연결리스트 맨 뒤에 B의 요소를 추가하는 연산
+        i = 0
+        while B.getEntry(i) != None:
+            self.append(B.getEntry(i))
+            i = i+1
+        for i in range(B.size()+1):
+            B.delete(i)
+
+
