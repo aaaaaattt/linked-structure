@@ -17,7 +17,7 @@ class SparsePoly(LinkedList):
 
     def read(self): #입력
         inp1,inp2 = input("계수 차수 입력(종료:-1)").split()
-        inp1 = int(inp1)
+        inp1 = float(inp1)
         inp2 = int(inp2)
         a = Term(inp1,inp2)
         self.expo.append(a.expo)
@@ -25,7 +25,7 @@ class SparsePoly(LinkedList):
         
         while(inp1 != -1 and inp2 != -1):
             inp1,inp2 = input("계수 차수 입력(종료:-1)").split()
-            inp1 = int(inp1)
+            inp1 = float(inp1)
             inp2 = int(inp2)
             a = Term(inp1,inp2)
             if(inp1 == -1):
@@ -38,9 +38,8 @@ class SparsePoly(LinkedList):
         for i in range(len(self.coef)):
             Tsum = self.coef[i]
             for count in range(0,self.expo[i]):
-                Tsum *= self.expo[i]
+                Tsum *= n
             Rsum += Tsum
-            print("Rsum=",Rsum)
         
         
         return Rsum
@@ -52,7 +51,14 @@ class SparsePoly(LinkedList):
         for i in range (0,num):
             print(f"{self.coef[i]}x^{self.expo[i]} +",end=' ')
     
+    def display2(self):#출력
+        num = len(self.coef)
+        print("A+B :",end='')
+        for i in range (0,num):
+            print(f"{self.coef[i]}x^{self.expo[i]} +",end=' ')
+    #연산자 오버로딩 (A+B)
     def __add__(self, polyB):
+        c = SparsePoly()
         Self_lastIndex = len(self.expo)-1
         polyB_lastIndex = len(polyB.expo)-1
         self_innerIndex = 0
@@ -62,17 +68,20 @@ class SparsePoly(LinkedList):
             while(self_innerIndex <= Self_lastIndex or polyB_innerIndex<=polyB_lastIndex):        
                 if(self.expo[self_innerIndex]>polyB.expo[polyB_innerIndex]):
                     c.coef.append(self.coef[self_innerIndex])
+                    c.expo.append(self.expo[self_innerIndex])
                     self_innerIndex += 1
                     
                 
                 elif(self.expo[self_innerIndex]==polyB.expo[polyB_innerIndex]):
-                    self.coef[self_innerIndex]=self.coef[self_innerIndex]+=polyB.coef[polyB_innerIndex]
+                    c.coef.append(self.coef[self_innerIndex]+polyB.coef[polyB_innerIndex])
+                    c.expo.append(self.expo[self_innerIndex])
                     polyB_innerIndex += 1
                     self_innerIndex +=1
                     
                 
                 elif(self.expo[self_innerIndex]<polyB.expo[polyB_innerIndex]):
                     c.coef.append(polyB.coef[polyB_innerIndex])
+                    c.expo.append(polyB.expo[polyB_innerIndex])
                     polyB_innerIndex += 1
                     
 
@@ -80,13 +89,19 @@ class SparsePoly(LinkedList):
             if(self_innerIndex > Self_lastIndex):  
                 while(polyB_innerIndex<=polyB_lastIndex):
                     c.coef.append(polyB.coef[polyB_innerIndex])
+                    c.expo.append(polyB.expo[polyB_innerIndex])
                     polyB_innerIndex += 1
                     
 
             elif(polyB_innerIndex > polyB_lastIndex):
                 while(self_innerIndex<=Self_lastIndex):
                     c.coef.append(self.coef[self_innerIndex])
+                    c.expo.append(self.expo[self_innerIndex])
                     self_innerIndex += 1
+        self = c
+        return self
+
+       
     
     def add(self,polyB):            #다항식 덧셈 함수 , 시간복잡도는 O(n^2)
         num1 = len(self.coef)
@@ -154,22 +169,21 @@ class SparsePoly(LinkedList):
     
         
 
-a = SparsePoly()
+a = SparsePoly() #생성
+a.read()    #입력
+a.display() #출력
+print()
 
-a.read()
+b = SparsePoly() #생성
+b.read()         #입력
+b.display()#출력
 
-print(a.evaluate(3))
+print()
+a.add(b)
 
-#print("차수 : "a.degree())
-# a.display()
-# print()
-# b = SparsePoly()
-# b.read()
-# b.display()
-# print()
-# a.add(b)
-
-
-
-        
-            
+print("연산자 오버로딩(A+B) 결과 : ",end='')
+d = a+b 
+d.display2()
+print()
+print("새로운 다항식에 수식연산(evaluate) 1 대입 결과: ",end='')
+print(d.evaluate(1))
